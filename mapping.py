@@ -79,7 +79,7 @@ for cam in cams:
 
 # positions = np.zeros((NO_LEDS, 3))
 
-
+dshflkjsdklf
 positions = np.zeros((NO_LEDS, 3))
 
 for i in range(NO_LEDS):
