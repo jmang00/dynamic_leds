@@ -1,4 +1,2 @@
-_pycache_
+__pycache__
 *.zip
-/old
-/scan1
