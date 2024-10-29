@@ -1,28 +1,62 @@
 """
-Define a scene - a setup of LEDs & cameras.
+A scene - a physical setup of LEDs & cameras.
 """
 
+import os
 import yaml
+
+from .led import LEDArray
 from ..models.camera import CameraGroup
 
 
 class Scene:
     def __init__(self, scene_name):
         self.name = scene_name
-        self.cams = None
-        self.leds = None
-        self.scans = None
-        self.load()
+        self.path = os.path.join(os.getcwd(), scene_name)
 
-    def load(self):
-        with open(f'data/scenes/{self.name}/details.yaml', 'r') as f:
-            details = yaml.safe_load(f)
+        print('Loading scene...')
+        config_path = os.path.join(self.path,  'config.yaml')
+
+        if not os.path.isfile(config_path):
+            raise FileNotFoundError(f"No config file found.")
+
+        print('Found config file.\n')
+
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+
+        print('Initializing LEDs...')
+        self.leds = LEDArray(config)
+
+        print('Initializing cameras...')
+        self.cams = CameraGroup(config)
+
+        scan_path = os.path.join(self.path, 'scan')
+        if not os.path.isfile(config_path):
+            print('No scan found. You will need to scan the scene before running effects.')
+            return
+
+        print('Loading data from scan...')
+        scan = Scan(scan_path)
+
+    """ Create a new scan of the scene. """
+    def scan(self):
+
+        # self.scan.scan()
+
+    def load(
+            scenes/{self.name}/details.yaml', 'r') as f:
+
+        details = yaml.safe_load(f)
 
         self.cams = CameraGroup(details)
         self.no_leds = details['NO_LEDS']
         self.duration = details['DURATION_SECONDS']
 
         self.load_camera_frame_positions()
+
+    def run(self, effect: Effect):
+        pass
 
     def load_camera_frame_positions(self):
         try:

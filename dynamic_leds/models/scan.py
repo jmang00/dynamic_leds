@@ -8,7 +8,9 @@ import cv2
 from ..models.camera import CameraGroup
 
 class Scan:
-    def __init__(self, scan_name):
+    def __init__(self, scan_path):
+        self.path = scan_path
+
         self.cam = None
         self.no_leds = None
         self.scans = None

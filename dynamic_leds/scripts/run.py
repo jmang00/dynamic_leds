@@ -8,6 +8,7 @@ from ..effects.WaveEffect2D import WaveEffect2D
 
 print('Initialising dynamic lighting!\n')
 
+
 # Load settings
 with open('../../examples/single_cam/config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -20,7 +21,6 @@ leds = LEDArray(config)
 # Setup camera(s)
 print('\nInitializing cameras...')
 cams = CameraGroup(config)  
-
 
 # Setup scan object
 print('\nLoading data from scan...')
