@@ -1,3 +1,7 @@
+"""
+Utility functions for handling colors.
+"""
+
 import numpy as np
 
 # Return the colour some fraction of the way between two rgb colours

@@ -1,5 +1,5 @@
-SCENE_NAME: automation-halloween
 NO_LEDS: 300
+LAYOUT: 3d
 BRIGHTNESS: 0.4
 CAMS:
   # List cameras - can either be an index or a url

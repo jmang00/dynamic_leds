@@ -5,7 +5,9 @@ A scene - a physical setup of LEDs & cameras.
 import os
 import yaml
 
+from .effect import Effect
 from .led import LEDArray
+from .scan import Scan
 from ..models.camera import CameraGroup
 
 
@@ -39,21 +41,21 @@ class Scene:
         print('Loading data from scan...')
         scan = Scan(scan_path)
 
-    """ Create a new scan of the scene. """
-    def scan(self):
+    # """ Create a new scan of the scene. """
+    # def scan(self):
+    #
+    #     # self.scan.scan()
 
-        # self.scan.scan()
-
-    def load(
-            scenes/{self.name}/details.yaml', 'r') as f:
-
-        details = yaml.safe_load(f)
-
-        self.cams = CameraGroup(details)
-        self.no_leds = details['NO_LEDS']
-        self.duration = details['DURATION_SECONDS']
-
-        self.load_camera_frame_positions()
+    # def load(
+    #         scenes/{self.name}/details.yaml', 'r') as f:
+    #
+    #     details = yaml.safe_load(f)
+    #
+    #     self.cams = CameraGroup(details)
+    #     self.no_leds = details['NO_LEDS']
+    #     self.duration = details['DURATION_SECONDS']
+    #
+    #     self.load_camera_frame_positions()
 
     def run(self, effect: Effect):
         pass

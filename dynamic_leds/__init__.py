@@ -7,6 +7,7 @@ Currently only supports a single scene.
 
 from dynamic_leds.models.scene import Scene
 
+
 class DynamicLeds:
     def __init__(self, config=None):
         self.scene = None
