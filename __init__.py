@@ -5,11 +5,12 @@ Currently only supports a single scene.
 
 """
 
+from dynamic_leds.models.effect import Effect
 from dynamic_leds.models.scene import Scene
 
 
 class DynamicLeds:
-    def __init__(self, config=None):
+    def __init__(self):
         self.scene = None
 
     def load_scene(self, scene_name: str):
@@ -21,4 +22,6 @@ class DynamicLeds:
     def run(self, effect: Effect):
         self.scene.run(effect)
 
+    def off(self):
+        self.scene.leds.set_all_off()
 

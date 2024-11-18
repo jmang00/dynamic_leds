@@ -1,4 +1,4 @@
 *.zip
-data
+images
 __pycache__
 .venv

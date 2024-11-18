@@ -3,9 +3,8 @@ import time
 
 
 class Effect(ABC):
-    def __init__(self, leds, positions, fps=60):
+    def __init__(self, name, leds, fps=60):
         self.leds = leds
-        self.positions = positions
         self.fps = fps
 
     def run(self):
@@ -29,3 +28,9 @@ class Effect(ABC):
     @abstractmethod
     def draw(self):
         pass
+
+class EffecLine(Effect):
+    def __init__(self, name, leds, fps=60):
+        super().__init__(name, leds, fps)
+    
+# class Effect2D:

@@ -28,6 +28,10 @@ class LEDArray:
     def __setitem__(self, index, value):
         self.leds[index] = value
 
+    def fill(self, color):
+        self.leds.fill(color)
+        self.leds.show()
+        
     def show(self):
         self.leds.show()
 

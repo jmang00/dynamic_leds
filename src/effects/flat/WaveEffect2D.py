@@ -1,5 +1,6 @@
 from ..models.effect import Effect
-
+from ..util.color import get_color_in_sequence
+import numpy as np
 
 class WaveEffect2D(Effect):
     def __init__(self, leds, positions, color_list, duration=1, fps=60, direction='x'):
