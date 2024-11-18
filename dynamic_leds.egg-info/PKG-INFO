@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: dynamic_leds
+Version: 1.0
+Summary: Dynamic LEDs - A module for scanning and controlling individually addressable LEDs.
+Home-page: https://github.com/jmang00/dynamic_leds
+Author: <Jai Mangos>
+Author-email: jaimangos@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+This is designed to run on a Raspberry Pi.
+
