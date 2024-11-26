@@ -1,5 +1,5 @@
 """
-A scene - a physical setup of LEDs & cameras.
+Defines a scene - a physical setup of LEDs & cameras.
 """
 
 import os
@@ -9,7 +9,7 @@ import time
 
 from .effect import Effect
 from .led import LEDArray
-from .scan import Scan
+from .scan import Scanner3DSpinning
 from ..models.camera import CameraGroup
 
 
@@ -28,13 +28,13 @@ class Scene:
         if not os.path.isfile(config_path):
             raise FileNotFoundError(f"No config file found.")
 
-        print('Found config file.\n')
+        print('Loaded config file.\n')
 
         with open(config_path, 'r') as f:
-            config = yaml.safe_load(f)
+            self.config = yaml.safe_load(f)
         
-        self.fps = config['FPS']
-        self.layout = config['LAYOUT']
+        self.fps = self.config['FPS']
+        self.layout = self.config['LAYOUT']
         self.current_effect_file = None
         
         self.effects_path = os.path.abspath(os.path.join(
@@ -46,27 +46,32 @@ class Scene:
         self.effects_path_relative = os.path.join('../effects', self.layout)
 
         print('Initializing LEDs.')
-        self.leds = LEDArray(config)
+        self.leds = LEDArray(self.config)
 
-        if config['CAMS'] is not None:
+        if self.config['CAMS'] is not None:
             print('Initializing cameras.')
-            self.cams = CameraGroup(config)
+            self.cams = CameraGroup(self.config)
         else:
             self.cams = None
 
         self.scan_path = os.path.join(self.path, 'scan')
-        if not os.path.isfile(self.scan_path):
-            print('No scan found. Unless you are using a line layout, you will need to scan the scene before running effects.')
-            return
+        if self.layout != 'LINE' and not os.path.isfile(self.scan_path):
+            print('\nNo scan found. To run effects, you need to scan this scene.')
+            input('Press Enter when you are ready to start scanning...')
+            self.scan()
         else:
-            print('Loading data from scan...')
-            scan = Scan(self.scan_path)
-
-
-    """ Create a new scan of the scene. """
+            print('Loading led positions from previous scan...')
+            self.load_positions()
+        
+    def load_positions(self):
+        # Load the led positions from a scan
+        self.led_positions = os.path.join(self.scan_path, 'positions.csv')
+        
     def scan(self):
-        pass
-
+        print('\n-----SCANNING------')
+        Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],).run() # TODO: allow you to select the scan method in menu or in config file.
+        self.load_positions()
+        
     """ Returns a list of effects (python modules) that can be run on this scene. """
     def list_effects(self):
         return sorted(
