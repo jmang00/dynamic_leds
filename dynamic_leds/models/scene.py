@@ -70,7 +70,7 @@ class Scene:
     """ Returns a list of effects (python modules) that can be run on this scene. """
     def list_effects(self):
         return sorted(
-            [f.split('.')[0] for f in os.listdir(self.effects_path) if f.endswith('.py')]
+            [f.split('.')[0] for f in os.listdir(self.effects_path) if f.endswith('.py') and not f.startswith('_')]
         )
     
     """ Loads an effect file and runs it """
