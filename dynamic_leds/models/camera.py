@@ -5,8 +5,10 @@ from io import BytesIO
 import cv2
 from abc import ABC, abstractmethod
 
-
 class CameraGroup:
+    """
+    Abstract class for a group of cameras
+    """
     def __init__(self, config):
         self.cameras = []
         for cam_id, cam_source in config['CAMS'].items():
@@ -35,7 +37,6 @@ class CameraGroup:
     def release_all(self):
         for camera in self.cameras:
             camera.release()
-
 
 class Camera(ABC):
     """
