@@ -75,8 +75,8 @@ def find_circular_light_pixels(image, intensity_threshold, min_radius, max_radiu
 
                 return pixel_coordinates
             else:
-                print("No circular light sources found in the specified region.")
+                # print("No circular light sources found in the specified region.")
                 return None
         else:
-            print("No circular light sources found.")
+            # print("No circular light sources found.")
             return None

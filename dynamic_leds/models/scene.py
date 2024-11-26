@@ -6,6 +6,7 @@ import os
 import importlib
 import yaml
 import time
+import numpy as np
 
 from .effect import Effect
 from .led import LEDArray
@@ -44,29 +45,30 @@ class Scene:
         ))
         
         self.effects_path_relative = os.path.join('../effects', self.layout)
-
-        print('Initializing LEDs.')
+        
         self.leds = LEDArray(self.config)
+        print('Initialized LEDs.')
 
         if self.config['CAMS'] is not None:
-            print('Initializing cameras.')
             self.cams = CameraGroup(self.config)
+            print('Initialized cameras.')
         else:
             self.cams = None
 
         self.scan_path = os.path.join(self.path, 'scan')
-        if self.layout != 'LINE' and not os.path.isfile(self.scan_path):
+        if self.layout != 'LINE' and not os.path.isdir(self.scan_path):
             print('\nNo scan found. To run effects, you need to scan this scene.')
             input('Press Enter when you are ready to start scanning...')
             self.scan()
         else:
-            print('Loading led positions from previous scan...')
             self.load_positions()
+            print('Loaded led positions from previous scan.')
         
     def load_positions(self):
         # Load the led positions from a scan
-        self.led_positions = os.path.join(self.scan_path, 'positions.csv')
-        
+        positions_path = os.path.join(self.scan_path, 'positions.csv')
+        self.led_positions = np.loadtxt(positions_path, delimiter=',')
+    
     def scan(self):
         print('\n-----SCANNING------')
         Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],).run() # TODO: allow you to select the scan method in menu or in config file.
@@ -90,7 +92,10 @@ class Scene:
         effect = importlib.import_module(effect_module_path, package)
         
         self.leds.set_all_off()
-        effect.setup(self.leds)
+        if self.layout == 'LINE':
+            effect.setup(self.leds)
+        else:
+            effect.setup(self.leds, self.led_positions)
 
         try:
             print('Running effect... press Ctrl+C to stop.')
