@@ -23,6 +23,7 @@ Output: A file containing the **positions** of the leds
 class Scanner(ABC):
     def __init__(self, leds: LEDArray, cams: CameraGroup, scan_path: str):
         self.scan_path = scan_path
+        self.images_path = os.path.join(self.scan_path, 'images')
         self.leds = leds
         self.cams = cams
         
@@ -63,10 +64,8 @@ class Scanner3DSpinning(Scanner):
         # Record start time
         start_time = datetime.now()
         
-        images_path = os.path.join(self.scan_path, 'images')
-        
         # Create directory if it doesn't exist
-        os.makedirs(images_path, exist_ok=True)
+        os.makedirs(self.images_path, exist_ok=True)
         
         try:
             for angle in self.angles:
@@ -79,7 +78,7 @@ class Scanner3DSpinning(Scanner):
                 while x != '':
                     # Take a base image from each camera
                     for cam in self.cams:
-                        cam.save_photo(os.path.join(images_path, f'{cam.id}_{angle}_base.jpg'))
+                        cam.save_photo(os.path.join(self.images_path, f'{cam.id}_{angle}_base.jpg'))
     
                     # Check base image
                     print('\n~~ Confirm the base image looks okay ~~')
@@ -96,7 +95,7 @@ class Scanner3DSpinning(Scanner):
     
                     # Read camera
                     for cam in self.cams:
-                        cam.save_photo(os.path.join(images_path, f'{cam.id}_{angle}_{i}.jpg'))
+                        cam.save_photo(os.path.join(self.images_path, f'{cam.id}_{angle}_{i}.jpg'))
     
                     # Turn off
                     self.leds[i] = (0, 0, 0)
@@ -127,6 +126,7 @@ class Scanner3DSpinning(Scanner):
     
         with open(os.path.join(self.scan_path, 'details.yaml'), 'w') as f:
             yaml.dump(scan_details, f)
+    
     def photos_to_frame_positions(self):
         # Open base images
         base_img = {}
@@ -139,47 +139,50 @@ class Scanner3DSpinning(Scanner):
         positions_camera_frame = np.zeros((4, self.leds.count, 2))
 
         for i in range(self.leds.count):
+            print(f'Processing images for LED {i}')
             for angle in self.angles:
-                # Find location of LED in image
-                img = cv2.imread(os.path.join(self.scan_path,f'0_{angle}_{i}.jpg'))
-                base_img = cv2.imread(os.path.join(self.scan_path,f'0_{angle}_base.jpg'))
+                for cam in self.cams:
+                    # Find location of LED in image
+                    img = cv2.imread(os.path.join(self.images_path,f'{cam.id}_{angle}_{i}.jpg'))
+                    base_img = cv2.imread(os.path.join(self.images_path,f'{cam.id}_{angle}_base.jpg'))
 
-                # print(img)
-                # print(base_img)
+                    # print(img)
+                    # print(base_img)
 
-                # print(img.shape)
-                # print(base_img.shape)
+                    # print(img.shape)
+                    # print(base_img.shape)
 
-                diff_img = cv2.subtract(img, base_img)
-                # cv2.imshow('Difference Image', diff_img)
+                    diff_img = cv2.subtract(img, base_img)
+                    # cv2.imshow('Difference Image', diff_img)
 
-                # # Using the brightest pixel
-                # x, y = find_brightest_pixel(  diff_img)
+                    # # Using the brightest pixel
+                    # x, y = find_brightest_pixel(  diff_img)
 
-                # Using the circular light source
-                intensity_threshold = 130  # Adjust this value based on your images
-                shitter_intensity_threshold = 70  # Adjust this value based on your images
-                min_radius = 5  # Adjust as needed based on the expected size of the circular light sources
-                max_radius = 25  # Adjust as needed based on the expected size of the circular light sources
-                avoid_left_region = 150  # Specify the x-coordinate to avoid circles on the left side
-                
-                coordinates = find_circular_light_pixels(diff_img, intensity_threshold, min_radius, max_radius, avoid_left_region)
+                    # Using the circular light source
+                    intensity_threshold = 130  # Adjust this value based on your images
+                    shitter_intensity_threshold = 70  # Adjust this value based on your images
+                    min_radius = 5  # Adjust as needed based on the expected size of the circular light sources
+                    max_radius = 25  # Adjust as needed based on the expected size of the circular light sources
+                    avoid_left_region = 150  # Specify the x-coordinate to avoid circles on the left side
+                    
+                    coordinates = find_circular_light_pixels(diff_img, intensity_threshold, min_radius, max_radius, avoid_left_region)
 
 
-                # Show coordinate
-                # # Display the image with circles
-                # cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)  
-                # cv2.imshow('Circles', img)
-                # cv2.waitKey(0)
-                # cv2.destroyAllWindows()
-                
-                if coordinates is None:
-                    print(f'LED {i} at angle {angle} not found, repeat with a lower threshhold')
-                    coordinates = find_circular_light_pixels(diff_img, shitter_intensity_threshold, min_radius, max_radius, avoid_left_region)
+                    # Show coordinate
+                    # # Display the image with circles
+                    # cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)  
+                    # cv2.imshow('Circles', img)
+                    # cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
+                    
+                    if coordinates is None:
+                        # print(f'LED {i} at angle {angle} not found, repeat with a lower threshhold')
+                        print(f'\tNot visible from angle: {angle}')
+                        coordinates = find_circular_light_pixels(diff_img, shitter_intensity_threshold, min_radius, max_radius, avoid_left_region)
 
-                # Save position
-                if coordinates is not None:
-                    positions_camera_frame[self.angles.index(angle), i] = coordinates[0]
+                    # Save position
+                    if coordinates is not None:
+                        positions_camera_frame[self.angles.index(angle), i] = coordinates[0]
 
             # TODO - check how many angles worked and redo
 
