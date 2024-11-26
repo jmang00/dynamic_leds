@@ -1,4 +1,4 @@
-from dynamic_leds import init
+from dynamic_leds.dynamic_leds import init
 
 
 cam = init.init_local_camera()
