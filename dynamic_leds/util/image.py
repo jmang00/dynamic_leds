@@ -3,6 +3,7 @@ Utility functions for image processing.
 """
 
 import cv2
+import numpy as np
 
 def find_brightest_pixel(image):
     width, height = image.shape[:2]
@@ -31,7 +32,8 @@ def find_circular_light_pixels(image, intensity_threshold, min_radius, max_radiu
     # avoid_left_region
 
     # Convert image to a cv2 image
-    image = np.array(image)
+    # image = np.array(image)
+    
     # # Convert RGB to BGR
     # open_cv_image = open_cv_image[:, :, ::-1].copy()
 
