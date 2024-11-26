@@ -1,17 +1,17 @@
+from ...models.led import LEDArray
 from ...util.color import get_color_in_sequence, inbetween_color
 
 name = 'Rainbow Wave'
-
+fps = 30
 
 full_rgb_cycle_colors_gaps = [(255, 0, 0), (0,0,0), (0,0,0), (255, 255, 0), (0,0,0), (0,0,0), (0, 255, 0), (0,0,0), (0,0,0), (0, 255, 255), (0,0,0), (0,0,0), (0, 0, 255), (0,0,0), (0,0,0),  (255, 0, 255)]
 progress = 0
 duration = 10
-fps = 30
 
-def setup(leds):
+def setup(leds: LEDArray):
     pass
 
-def draw(leds):
+def draw(leds: LEDArray):
     global progress, duration, fps
     global full_rgb_cycle_colors_gaps
     
