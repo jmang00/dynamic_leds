@@ -56,22 +56,20 @@ class Scene:
             self.cams = None
 
         self.scan_path = os.path.join(self.path, 'scan')
-        if self.layout != 'LINE' and not os.path.isdir(self.scan_path):
+        self.scanner = Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],) # TODO: allow you to select the scan method in menu or in config file.
+
+        if self.layout != 'line' and not os.path.isdir(self.scan_path):
             print('\nNo scan found. To run effects, you need to scan this scene.')
             input('Press Enter when you are ready to start scanning...')
-            self.scan()
+            self.scanner.run()
         else:
-            self.load_positions()
-            print('Loaded led positions from previous scan.')
+            print('Loading led positions from previous scan.')
+        self.led_positions = self.scanner.load_positions()
         
-    def load_positions(self):
-        # Load the led positions from a scan
-        positions_path = os.path.join(self.scan_path, 'positions.csv')
-        self.led_positions = np.loadtxt(positions_path, delimiter=',')
     
     def scan(self):
         print('\n-----SCANNING------')
-        Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],).run() # TODO: allow you to select the scan method in menu or in config file.
+        
         self.load_positions()
         
     """ Returns a list of effects (python modules) that can be run on this scene. """

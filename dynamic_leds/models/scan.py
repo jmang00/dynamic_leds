@@ -24,6 +24,9 @@ class Scanner(ABC):
     def __init__(self, leds: LEDArray, cams: CameraGroup, scan_path: str):
         self.scan_path = scan_path
         self.images_path = os.path.join(self.scan_path, 'images')
+        self.positions_camera_frame_path = os.path.join(self.scan_path, 'positions_camera_frame.npy')
+        self.positions_path = os.path.join(self.scan_path, 'positions.csv')
+
         self.leds = leds
         self.cams = cams
         
@@ -32,10 +35,29 @@ class Scanner(ABC):
 
     def run(self):
         self.take_photos()
-        self.photos_to_frame_positions()
-        self.frame_positions_to_3d_positions() # also saves to CSV
         self.leds.set_brightness(self.old_brightness)
-    
+        self.process_photos()
+        
+    def process_photos(self):
+        """ Process an existing scan without taking new photos. Completes each processing step that hasn't already been done"""
+        
+        if not os.path.isdir(self.positions_camera_frame_path):
+            print('No positions_camera_frame.npy file found in the scan directory')
+            self.photos_to_frame_positions()
+        
+        if not os.path.isdir(self.positions_path):
+            print('No positions.csv file found in the scan directory')
+            self.frame_positions_to_3d_positions() # also saves to CSV
+        
+    def load_positions(self):       
+        try:
+            return np.loadtxt(self.positions_path, delimiter=',')
+        except FileNotFoundError:
+            print('No positions.csv file found in the scan directory')
+            print('Reprocessing the scan...')
+            self.process_photos()
+            return np.loadtxt(self.positions_path, delimiter=',')
+
     @abstractmethod
     def take_photos(self):
         pass
@@ -209,6 +231,22 @@ class Scanner3DSpinning(Scanner):
             )
     
     def frame_positions_to_3d_positions(self):
+        # TODO - find coords relative to tree ??
+        # from images manually
+        # tree_bottom = {
+        #     0: (296, 620),
+        #     90: (299, 604),
+        #     180: (258, 598),
+        #     270: (279, 596)
+        # }
+
+        # tree_top = {
+        #     0: (287, 31),
+        #     90: (264, 52),
+        #     180: (274, 66),
+        #     270: (291, 66)
+        # }
+
         # Open the positions_camera_frame.npy file
         positions_camera_frame = np.load(os.path.join(self.scan_path, 'positions_camera_frame.npy'))
     
@@ -259,6 +297,3 @@ class Scanner3DSpinning(Scanner):
     
         # Save the positions to a CSV file
         np.savetxt(os.path.join(self.scan_path, 'positions.csv'), positions_global, delimiter=',')
-
-
-      

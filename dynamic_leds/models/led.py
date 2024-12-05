@@ -20,7 +20,7 @@ class LEDArray:
             auto_write=False,
             pixel_order=self.PIXEL_ORDER
         )
-
+    
     def __len__(self):
         return self.count
 
