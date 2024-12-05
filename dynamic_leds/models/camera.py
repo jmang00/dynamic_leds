@@ -11,11 +11,12 @@ class CameraGroup:
     """
     def __init__(self, config):
         self.cameras = []
-        for cam_id, cam_source in config['CAMS'].items():
-            if int == type(cam_source):
-                self.cameras.append(LocalCamera(cam_id, cam_source))
-            elif str == type(cam_source):
-                self.cameras.append(UrlCamera(cam_id, cam_source))
+        for cam_id, cam_props in config['CAMS'].items():
+            cam_rotation = cam_props['ROTATE']
+            if 'URL' in cam_props:
+                self.cameras.append(UrlCamera(cam_id, cam_props['URL'], cam_rotation))
+            elif 'INDEX' in cam_props:
+                self.cameras.append(LocalCamera(cam_id, cam_props['INDEX'], cam_rotation))              
 
     def __iter__(self):
         return iter(self.cameras)
@@ -43,11 +44,12 @@ class Camera(ABC):
     Abstract base class for a camera.
     """
 
-    def __init__(self, camid):
+    def __init__(self, camid, rotation):
         """
         Initialize the camera with an ID.
         """
         self.id = camid
+        self.rotation = rotation
 
     @abstractmethod
     def is_open(self):
@@ -76,12 +78,12 @@ class UrlCamera(Camera):
     A camera that takes photos from a URL.
     """
 
-    def __init__(self, camid, url):
+    def __init__(self, camid, url, rotation):
         """
         Initialize the URL camera with an ID and a URL.
         """
         self.url = url
-        super().__init__(camid)
+        super().__init__(camid, rotation)
 
     def __repr__(self):
         """
@@ -106,7 +108,7 @@ class UrlCamera(Camera):
         """
         response = requests.get(self.url)
         img = Image.open(BytesIO(response.content))
-        img = img.rotate(270, expand=True)
+        img = img.rotate(self.rotation, expand=True)
         return img
 
     def save_photo(self, filename):
@@ -166,7 +168,14 @@ class LocalCamera(Camera):
         frame = self.take_photo()
 
         if frame is not None:
-            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+            if self.rotation == 90:
+                r = cv2.ROTATE_90_ANTICLOCKWISE
+            elif self.rotation == 180:
+                r = cv2.ROTATE_180
+            elif self.rotation == 270:
+                r = cv2.ROTATE_90_CLOCKWISE
+            frame = cv2.rotate(frame, r)
+            cv2.ROTATE
             cv2.imwrite(filename, frame)
 
     def release(self):
