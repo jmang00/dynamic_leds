@@ -1,4 +1,4 @@
-""" A basic template to follow for creating a 2D effect. """
+""" A basic template to follow for creating a 3D effect. """
 import numpy as np
 from ...models.led import LEDArray
 

@@ -11,7 +11,7 @@ fps = 60
 # Global variables
 wipe_progress = 0
 wipe_axis = 0  # 0 = x, 1 = y, 2 = z
-wipe_duration = 5  # Duration in seconds for the wipe to traverse the tree
+wipe_duration = 1  # Duration in seconds for the wipe to traverse the tree
 wipe_width_ratio = 0.05  # Width of the wipe relative to the tree size
 tree_bounds = None
 led_positions = None
