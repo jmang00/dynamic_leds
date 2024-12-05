@@ -3,7 +3,9 @@ import board
 import neopixel
 import time
 
-
+"""
+An array of LEDs. This is really just a wrapper class for Neopixel's led library.
+"""
 class LEDArray:
     PIXEL_PIN = board.D18
     PIXEL_ORDER = neopixel.GRB
@@ -18,7 +20,7 @@ class LEDArray:
             auto_write=False,
             pixel_order=self.PIXEL_ORDER
         )
-
+    
     def __len__(self):
         return self.count
 
@@ -40,6 +42,7 @@ class LEDArray:
         Set the brightness of the LEDs.
         """
         self.leds.brightness = brightness
+        self.brightness = brightness
         self.leds.show()
 
     def set_all_off(self):
