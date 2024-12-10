@@ -19,7 +19,7 @@ class Scene:
         self.name = scene_name
 
         print(f"Loading scene '{scene_name}'.")
-        self.path = os.path.join(os.getcwd(), 'scenes', scene_name)
+        self.path = os.path.join(os.getcwd(), 'data/scenes', scene_name)
 
         if not os.path.isdir(self.path):
             raise FileNotFoundError(f"No config file found.")
