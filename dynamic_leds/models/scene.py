@@ -55,16 +55,18 @@ class Scene:
         else:
             self.cams = None
 
-        self.scan_path = os.path.join(self.path, 'scan')
-        self.scanner = Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],) # TODO: allow you to select the scan method in menu or in config file.
+        if self.layout != 'line':
+            self.scan_path = os.path.join(self.path, 'scan')
+            self.scanner = Scanner3DSpinning(self.leds, self.cams, self.scan_path, self.config['SCAN']['ANGLES'],) # TODO: allow you to select the scan method in menu or in config file.
 
-        if self.layout != 'line' and not os.path.isdir(self.scan_path):
-            print('\nNo scan found. To run effects, you need to scan this scene.')
-            input('Press Enter when you are ready to start scanning...')
-            self.scanner.run()
-        else:
-            print('Loading led positions from previous scan.')
-        self.led_positions = self.scanner.load_positions()
+            if not os.path.isdir(self.scan_path):
+                print('\nNo scan found. To run effects, you need to scan this scene.')
+                input('Press Enter when you are ready to start scanning...')
+                self.scanner.run()
+            else:
+                print('Loading led positions from previous scan.')
+
+            self.led_positions = self.scanner.load_positions()
         
     
     def scan(self):
@@ -90,7 +92,7 @@ class Scene:
         effect = importlib.import_module(effect_module_path, package)
         
         self.leds.set_all_off()
-        if self.layout == 'LINE':
+        if self.layout == 'line':
             effect.setup(self.leds)
         else:
             effect.setup(self.leds, self.led_positions)
