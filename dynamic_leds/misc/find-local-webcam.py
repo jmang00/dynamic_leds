@@ -1,4 +1,4 @@
-# Finds the index of the first working webcam and saves it to the config file.
+# Finds the index of the first working webcam and saves it to the current scene's config file.
 import yaml
 from dynamic_leds.models.camera import LocalCamera
 

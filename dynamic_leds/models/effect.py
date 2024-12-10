@@ -29,8 +29,8 @@ class Effect(ABC):
     def draw(self):
         pass
 
-class EffecLine(Effect):
-    def __init__(self, name, leds, fps=60):
-        super().__init__(name, leds, fps)
+# class EffecLine(Effect):
+#     def __init__(self, name, leds, fps=60):
+#         super().__init__(name, leds, fps)
     
 # class Effect2D:
