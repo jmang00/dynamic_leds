@@ -2,3 +2,4 @@
 images
 __pycache__
 .venv
+dynamic_leds.egg-info
