@@ -1,8 +1,7 @@
 
 import board
 import neopixel
-import time
-
+from time import sleep
 """
 An array of LEDs. This is really just a wrapper class for Neopixel's led library.
 """
@@ -45,26 +44,22 @@ class LEDArray:
         self.brightness = brightness
         self.leds.show()
 
-    def set_all_off(self):
+    def clear(self):
         self.leds.fill((0, 0, 0))
-        self.leds.show()
-        time.sleep(0.01)
 
-    def set_all_white(self):
+    def white(self):
         self.leds.fill((255, 255, 255))
-        self.leds.show()
-        time.sleep(0.01)
 
-    def basic_cycle(self):
-        self.leds.fill((255, 255, 255))
-        self.leds.show()
-        time.sleep(2)
-        self.leds.fill((255, 0, 0))
-        self.leds.show()
-        time.sleep(0.5)
-        self.leds.fill((0, 255, 0))
-        self.leds.show()
-        time.sleep(0.5)
-        self.leds.fill((0, 0, 255))
-        self.leds.show()
-        time.sleep(0.5)
+    def test_cycle(self):
+        self.fill((255, 255, 255))
+        self.show()
+        sleep(2)
+        self.fill((255, 0, 0))
+        self.show()
+        sleep(0.5)
+        self.fill((0, 255, 0))
+        self.show()
+        sleep(0.5)
+        self.fill((0, 0, 255))
+        self.show()
+        sleep(0.5)
