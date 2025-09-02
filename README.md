@@ -1,10 +1,10 @@
-This is designed to run on a Raspberry Pi.
+A Python library for handling dynamic LED displays. It provides functions for:
+- scanning leds
+- running effects
+- managing scenes
 
+In future, this may be installable as a Python library.
 
-# Random Notes
-
-- scan will
-
-To install:
-
-sudo pip install -e . --break-system-packages
+# Links
+- [Backup of the setup using this library on a pi](https://github.com/jmang00/leds)
+- [My old repo with a simulation](https://github.com/jmang00/tree-effects)
