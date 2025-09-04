@@ -1,0 +1,6 @@
+NO_LEDS: 300
+LAYOUT: flat
+BRIGHTNESS: 0.4
+CAMS:
+  # List cameras - can either be an index or a url
+  A: http://172.32.1.227:8080/?action=snapshot
